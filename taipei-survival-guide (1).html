@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taipei Survival Guide 台北生存指南</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: #0a0a0a; color: #f0ece3; min-height: 100vh; }
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2rem; height: 60px;
+    background: rgba(10,10,10,0.95);
+    border-bottom: 0.5px solid rgba(240,236,227,0.12);
+    backdrop-filter: blur(8px);
+  }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 18px; letter-spacing: 0.02em; color: #f0ece3; }
+  .nav-logo span { color: #d4522a; }
+  .nav-tabs { display: flex; gap: 4px; }
+  .nav-tab {
+    padding: 7px 16px; font-size: 13px; font-weight: 400;
+    border: none; background: transparent;
+    color: rgba(240,236,227,0.45); cursor: pointer;
+    border-radius: 6px; transition: all 0.2s; letter-spacing: 0.02em;
+  }
+  .nav-tab:hover { color: #f0ece3; background: rgba(255,255,255,0.06); }
+  .nav-tab.active { color: #f0ece3; background: rgba(212,82,42,0.2); }
+  .page { display: none; }
+  .page.active { display: block; }
+  .hero {
+    position: relative; height: 440px;
+    display: flex; align-items: flex-end; padding: 2.5rem;
+    overflow: hidden;
+    background: linear-gradient(135deg, #1a0a04 0%, #0a0a0a 60%);
+    border-bottom: 0.5px solid rgba(240,236,227,0.08);
+  }
+  .hero-bg-text {
+    position: absolute; top: -10px; right: -10px;
+    font-family: 'Playfair Display', serif; font-size: 220px; font-weight: 700;
+    color: rgba(212,82,42,0.05); line-height: 1; pointer-events: none; user-select: none;
+  }
+  .hero-tag { font-size: 11px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: #d4522a; margin-bottom: 14px; }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: 56px; line-height: 1.05; font-weight: 700; color: #f0ece3; margin-bottom: 14px; }
+  .hero h1 em { font-style: normal; color: rgba(240,236,227,0.35); display: block; font-size: 40px; }
+  .hero-sub { font-size: 14px; color: rgba(240,236,227,0.4); font-weight: 300; letter-spacing: 0.04em; }
+  .hero-pills { position: absolute; right: 2.5rem; bottom: 2.5rem; display: flex; flex-direction: column; gap: 8px; text-align: right; }
+  .hero-pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border: 0.5px solid rgba(240,236,227,0.15); border-radius: 100px; font-size: 12px; color: rgba(240,236,227,0.55); background: rgba(255,255,255,0.04); }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: #d4522a; flex-shrink: 0; }
+  .section-label { display: flex; align-items: center; gap: 14px; padding: 2.5rem 2rem 1.2rem; }
+  .section-line { flex: 1; height: 0.5px; background: rgba(240,236,227,0.1); }
+  .section-text { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(240,236,227,0.28); white-space: nowrap; }
+  .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: rgba(240,236,227,0.08); margin: 0 2rem 2rem; border-radius: 12px; overflow: hidden; }
+  .card-item { background: #111; padding: 1.6rem; }
+  .card-item.full { grid-column: 1 / -1; }
+  .card-tag { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #d4522a; margin-bottom: 10px; }
+  .card-item h3 { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: #f0ece3; margin-bottom: 10px; }
+  .card-item p { font-size: 13px; line-height: 1.75; color: rgba(240,236,227,0.48); }
+  .price-badge { display: inline-block; margin-top: 12px; padding: 4px 14px; background: rgba(212,82,42,0.12); border: 0.5px solid rgba(212,82,42,0.28); border-radius: 100px; font-size: 12px; color: #d4522a; font-weight: 500; }
+  .compare-table { margin: 0 2rem 2rem; border: 0.5px solid rgba(240,236,227,0.1); border-radius: 12px; overflow: hidden; }
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr 1fr; border-bottom: 0.5px solid rgba(240,236,227,0.07); }
+  .compare-row:last-child { border-bottom: none; }
+  .compare-cell { padding: 14px 18px; font-size: 13px; color: rgba(240,236,227,0.55); border-right: 0.5px solid rgba(240,236,227,0.07); }
+  .compare-cell:last-child { border-right: none; }
+  .compare-cell.header { background: rgba(255,255,255,0.025); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(240,236,227,0.28); }
+  .compare-cell.highlight { color: #d4522a; font-weight: 500; }
+  .tip-box { margin: 0 2rem 2.5rem; padding: 1.25rem 1.6rem; background: rgba(212,82,42,0.06); border-left: 2px solid #d4522a; border-radius: 0 8px 8px 0; }
+  .tip-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #d4522a; margin-bottom: 8px; }
+  .tip-box p { font-size: 13px; line-height: 1.75; color: rgba(240,236,227,0.55); }
+  .district-list { margin: 0 2rem 2rem; display: flex; flex-direction: column; gap: 1px; background: rgba(240,236,227,0.08); border-radius: 12px; overflow: hidden; }
+  .district-row { display: grid; grid-template-columns: 44px 1fr auto; align-items: start; gap: 16px; padding: 1.4rem 1.6rem; background: #111; transition: background 0.15s; }
+  .district-row:hover { background: #161616; }
+  .district-num { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; color: rgba(212,82,42,0.22); line-height: 1; padding-top: 2px; }
+  .district-name { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: #f0ece3; margin-bottom: 3px; }
+  .district-name-en { font-size: 11px; letter-spacing: 0.08em; color: rgba(240,236,227,0.28); text-transform: uppercase; margin-bottom: 8px; }
+  .district-desc { font-size: 13px; line-height: 1.65; color: rgba(240,236,227,0.48); }
+  .district-tags { display: flex; flex-direction: column; gap: 5px; align-items: flex-end; padding-top: 4px; }
+  .tag-pill { padding: 3px 10px; border-radius: 100px; font-size: 10px; letter-spacing: 0.06em; border: 0.5px solid rgba(240,236,227,0.14); color: rgba(240,236,227,0.38); white-space: nowrap; }
+  .alert-bar { margin: 0 2rem 1rem; padding: 12px 18px; background: rgba(212,82,42,0.07); border: 0.5px solid rgba(212,82,42,0.18); border-radius: 8px; font-size: 13px; line-height: 1.65; color: rgba(240,236,227,0.55); }
+  .alert-bar strong { color: #d4522a; }
+  .culture-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: rgba(240,236,227,0.08); margin: 0 2rem 2.5rem; border-radius: 12px; overflow: hidden; }
+  .culture-card { background: #111; padding: 1.4rem 1.5rem; }
+  .culture-card.rule-card { border-left: 1.5px solid #d4522a; }
+  .culture-icon { font-size: 26px; margin-bottom: 12px; display: block; }
+  .culture-title { font-size: 14px; font-weight: 500; color: #f0ece3; margin-bottom: 3px; }
+  .culture-title-en { font-size: 11px; color: rgba(240,236,227,0.28); letter-spacing: 0.06em; margin-bottom: 10px; }
+  .culture-desc { font-size: 12px; line-height: 1.7; color: rgba(240,236,227,0.42); }
+  .lang-tabs { display: flex; gap: 2px; margin-left: 12px; border-left: 0.5px solid rgba(240,236,227,0.12); padding-left: 12px; }
+  .lang-tab { padding: 5px 10px; font-size: 12px; font-weight: 400; border: none; background: transparent; color: rgba(240,236,227,0.35); cursor: pointer; border-radius: 5px; transition: all 0.2s; }
+  .lang-tab:hover { color: #f0ece3; }
+  .lang-tab.active { color: #f0ece3; background: rgba(255,255,255,0.08); }
+  .planner-box { margin: 0 2rem 3rem; border: 0.5px solid rgba(240,236,227,0.12); border-radius: 12px; overflow: hidden; }
+  .planner-header { padding: 1.6rem; background: rgba(212,82,42,0.06); border-bottom: 0.5px solid rgba(240,236,227,0.08); }
+  .planner-header h3 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: #f0ece3; margin-bottom: 6px; }
+  .planner-header p { font-size: 13px; color: rgba(240,236,227,0.45); line-height: 1.6; }
+  .planner-body { padding: 1.6rem; background: #111; }
+  .planner-row { display: flex; gap: 10px; margin-bottom: 14px; }
+  .planner-input { flex: 1; padding: 10px 14px; background: rgba(255,255,255,0.04); border: 0.5px solid rgba(240,236,227,0.15); border-radius: 8px; color: #f0ece3; font-size: 13px; font-family: 'DM Sans', sans-serif; outline: none; transition: border 0.2s; }
+  .planner-input:focus { border-color: rgba(212,82,42,0.5); }
+  .planner-input::placeholder { color: rgba(240,236,227,0.25); }
+  .planner-select { padding: 10px 14px; background: rgba(255,255,255,0.04); border: 0.5px solid rgba(240,236,227,0.15); border-radius: 8px; color: #f0ece3; font-size: 13px; font-family: 'DM Sans', sans-serif; outline: none; cursor: pointer; }
+  .planner-select option { background: #1a1a1a; }
+  .planner-btn { width: 100%; padding: 12px; background: #d4522a; border: none; border-radius: 8px; color: #fff; font-size: 14px; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: background 0.2s; }
+  .planner-btn:hover { background: #bf4925; }
+  .planner-btn:disabled { background: rgba(212,82,42,0.3); cursor: not-allowed; }
+  .planner-result { margin-top: 16px; padding: 1.4rem; background: rgba(255,255,255,0.03); border: 0.5px solid rgba(240,236,227,0.08); border-radius: 8px; font-size: 13px; line-height: 1.8; color: rgba(240,236,227,0.65); white-space: pre-wrap; display: none; }
+  .planner-loading { margin-top: 16px; text-align: center; font-size: 13px; color: rgba(240,236,227,0.35); display: none; padding: 1rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Taipei <span>指南</span></div>
+  <div style="display:flex;align-items:center;">
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showPage('transport',this)">🚇 <span data-key="nav-transport">交通</span></button>
+      <button class="nav-tab" onclick="showPage('places',this)">🗺️ <span data-key="nav-places">地點</span></button>
+      <button class="nav-tab" onclick="showPage('culture',this)">🤝 <span data-key="nav-culture">文化</span></button>
+    </div>
+    <div class="lang-tabs">
+      <button class="lang-tab active" onclick="setLang('zh',this)">中</button>
+      <button class="lang-tab" onclick="setLang('ja',this)">日</button>
+      <button class="lang-tab" onclick="setLang('ko',this)">한</button>
+    </div>
+  </div>
+</nav>
+
+<!-- TRANSPORT -->
+<div class="page active" id="page-transport">
+  <div class="hero">
+    <div class="hero-bg-text">MRT</div>
+    <div>
+      <div class="hero-tag">Chapter 01</div>
+      <h1><span data-key="t1-h1">Getting Around</span><em data-key="t1-h1-sub">搭車攻略</em></h1>
+      <div class="hero-sub" data-key="t1-sub">EasyCard vs. Day Pass — don't buy the wrong one on Day 1</div>
+    </div>
+    <div class="hero-pills">
+      <div class="hero-pill"><span class="dot"></span><span data-key="t1-pill1">悠遊卡 EasyCard</span></div>
+      <div class="hero-pill"><span class="dot"></span><span data-key="t1-pill2">一日票 Day Pass</span></div>
+      <div class="hero-pill"><span class="dot"></span><span data-key="t1-pill3">怎麼選 How to Choose</span></div>
+    </div>
+  </div>
+
+  <div class="section-label">
+    <div class="section-line"></div>
+    <div class="section-text" data-key="t1-sec1">票卡比較 Card Comparison</div>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="card-grid">
+    <div class="card-item">
+      <div class="card-tag" data-key="t1-c1-tag">儲值型 · Stored Value</div>
+      <h3 data-key="t1-c1-title">悠遊卡 EasyCard</h3>
+      <p data-key="t1-c1-desc">可搭捷運、公車、YouBike，還能在便利商店消費。幾乎什麼都能用。<br><br>Works on MRT, bus, YouBike & convenience stores. The all-in-one option.</p>
+      <div class="price-badge" data-key="t1-price1">NT$500（含100元押金）</div>
+    </div>
+    <div class="card-item">
+      <div class="card-tag" data-key="t1-c2-tag">時間型 · Time-Based</div>
+      <h3 data-key="t1-c2-title">一日票 Day Pass</h3>
+      <p data-key="t1-c2-desc">啟用當日捷運無限搭。注意：只限捷運，公車不算。<br><br>Unlimited MRT rides on the day of use. Buses not included.</p>
+      <div class="price-badge" data-key="t1-price2">NT$150 / 1日 · NT$180 / 24hr</div>
+    </div>
+  </div>
+
+  <div class="compare-table">
+    <div class="compare-row">
+      <div class="compare-cell header" data-key="t1-th1">你的狀況 Situation</div>
+      <div class="compare-cell header" data-key="t1-th2">推薦 Recommended</div>
+      <div class="compare-cell header" data-key="t1-th3">原因 Why</div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-cell" data-key="t1-r1c1">待3天以上 · Staying 3+ days</div>
+      <div class="compare-cell highlight" data-key="t1-rec1">悠遊卡 EasyCard</div>
+      <div class="compare-cell" data-key="t1-r1c3">可搭公車＋超商消費 · Works everywhere</div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-cell" data-key="t1-r2c1">只待1天，要狂跑景點</div>
+      <div class="compare-cell highlight" data-key="t1-rec2">一日票 Day Pass</div>
+      <div class="compare-cell" data-key="t1-r2c3">搭超過4趟就回本 · Breaks even at 4+ rides</div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-cell" data-key="t1-r3c1">不確定 · Not sure</div>
+      <div class="compare-cell highlight" data-key="t1-rec3">悠遊卡 EasyCard</div>
+      <div class="compare-cell" data-key="t1-r3c3">絕對不虧，離台可退押金 · Always the safe choice</div>
+    </div>
+  </div>
+
+  <div class="tip-box">
+    <div class="tip-label" data-key="t1-tip-label">小提醒 Pro Tip</div>
+    <p data-key="t1-tip-desc">機場、各捷運站服務處都買得到悠遊卡。押金100元，離台前到捷運站可退卡取回押金和餘額。<br>EasyCard available at airport & all MRT stations. NT$100 deposit fully refunded when returned before leaving Taiwan.</p>
+  </div>
+</div>
+
+<!-- PLACES -->
+<div class="page" id="page-places">
+  <div class="hero">
+    <div class="hero-bg-text">台北</div>
+    <div>
+      <div class="hero-tag">Chapter 02</div>
+      <h1><span data-key="p1-h1">Where to Go</span><em data-key="p1-h1-sub">台北各區指南</em></h1>
+      <div class="hero-sub" data-key="p1-sub">住哪、去哪、吃什麼 — Where to stay, wander & eat</div>
+    </div>
+  </div>
+
+  <div class="section-label">
+    <div class="section-line"></div>
+    <div class="section-text" data-key="p1-sec1">住宿建議 Where to Stay</div>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="card-grid">
+    <div class="card-item">
+      <div class="card-tag" data-key="p1-s1-tag">交通最方便 · Best Access</div>
+      <h3 data-key="p1-s1-title">北門 / 台北車站</h3>
+      <p data-key="p1-s1-desc">捷運、高鐵、公車、機場捷運全都在這。什麼都近，交通最方便。<br><br>MRT, HSR, buses & airport MRT all converge here. Best transport hub.</p>
+    </div>
+    <div class="card-item">
+      <div class="card-tag" data-key="p1-s2-tag">鬧中取靜 · Urban Balance</div>
+      <h3 data-key="p1-s2-title">忠孝新生</h3>
+      <p data-key="p1-s2-desc">生活機能好，稍微遠離觀光人潮，適合想感受日常台北的旅客。<br><br>Great local life, slightly away from the tourist rush.</p>
+    </div>
+  </div>
+
+  <div class="section-label">
+    <div class="section-line"></div>
+    <div class="section-text" data-key="p1-sec2">分區快速指南 District Guide</div>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="district-list">
+    <div class="district-row">
+      <div class="district-num">01</div>
+      <div>
+        <div class="district-name" data-key="d1-name">中山 × 雙連</div>
+        <div class="district-name-en" data-key="den1">Zhongshan × Shuanglian</div>
+        <div class="district-desc" data-key="d1-desc">步行10分鐘可到，中間就是寧夏夜市。中山站有新光三越、SOGO，白天逛街晚上吃夜市一條龍。吃完夜市還沒飽？附近有「世界美食總匯」，宵夜繼續吃。<br>10 min walk between stations with Ningxia Night Market in between. Shopping + night market in one go. Still hungry? World Gourmet nearby for late-night bites.</div>
+      </div>
+      <div class="district-tags">
+        <div class="tag-pill" data-key="tag-shopping">逛街 Shopping</div>
+        <div class="tag-pill" data-key="tag-nightmarket">夜市 Night Market</div>
+        <div class="tag-pill" data-key="tag-latenight">宵夜 Late Night</div>
+      </div>
+    </div>
+    <div class="district-row">
+      <div class="district-num">02</div>
+      <div>
+        <div class="district-name" data-key="d2-name">東門</div>
+        <div class="district-name-en" data-key="den2">Dongmen</div>
+        <div class="district-desc" data-key="d2-desc">質感小店 + 鼎泰豐本店就在這。適合慢慢逛的午後。<br>Boutique shops & the original Din Tai Fung. Perfect for a slow afternoon.</div>
+      </div>
+      <div class="district-tags">
+        <div class="tag-pill" data-key="tag-dining">餐廳 Dining</div>
+        <div class="tag-pill" data-key="tag-shopping2">逛街 Shopping</div>
+      </div>
+    </div>
+    <div class="district-row">
+      <div class="district-num">03</div>
+      <div>
+        <div class="district-name" data-key="d3-name">西門</div>
+        <div class="district-name-en" data-key="den3">Ximending</div>
+        <div class="district-desc" data-key="d3-desc">年輕、熱鬧、小吃多，像台版原宿。晚上人最多，活力十足。<br>Young, vibrant, packed with street food — like Taipei's Harajuku. Best at night.</div>
+      </div>
+      <div class="district-tags">
+        <div class="tag-pill" data-key="tag-streetfood">小吃 Street Food</div>
+        <div class="tag-pill" data-key="tag-shopping3">購物 Shopping</div>
+      </div>
+    </div>
+    <div class="district-row">
+      <div class="district-num">04</div>
+      <div>
+        <div class="district-name" data-key="d4-name">信義區 × 象山</div>
+        <div class="district-name-en" data-key="den4">Xinyi × Elephant Mountain</div>
+        <div class="district-desc" data-key="d4-desc">台北101到市政府全是百貨，下雨天首選。逛完走去象山約30分鐘，台北夜景全收。<br>Mall district from 101 to City Hall. After shopping, hike Elephant Mountain for the full city panorama.</div>
+      </div>
+      <div class="district-tags">
+        <div class="tag-pill" data-key="tag-malls">百貨 Malls</div>
+        <div class="tag-pill" data-key="tag-nightview">夜景 Night View</div>
+        <div class="tag-pill" data-key="tag-hiking">健行 Hiking</div>
+      </div>
+    </div>
+    <div class="district-row">
+      <div class="district-num">05</div>
+      <div>
+        <div class="district-name" data-key="d5-name">淡水 → 沙崙</div>
+        <div class="district-name-en" data-key="den5">Tamsui → Shaglung Beach</div>
+        <div class="district-desc" data-key="d5-desc">想看海就來這。捷運到淡水，轉淡海輕軌到沙崙站，走5–8分鐘就到海邊。<br>MRT to Tamsui, then Danhai LRT to Shaglung — 5–8 min walk to the beach.</div>
+      </div>
+      <div class="district-tags">
+        <div class="tag-pill" data-key="tag-beach">海邊 Beach</div>
+        <div class="tag-pill" data-key="tag-lrt">輕軌 LRT</div>
+      </div>
+    </div>
+    <div class="district-row">
+      <div class="district-num">06</div>
+      <div>
+        <div class="district-name" data-key="d6-name">南港</div>
+        <div class="district-name-en" data-key="den6">Nangang</div>
+        <div class="district-desc" data-key="d6-desc"><strong style="color:rgba(240,236,227,0.7);font-weight:500;" data-key="d6-s1">LaLaport</strong> — 南港軟體園區站或南港展覽館站下車，走在兩站中間就到了。Get off at Nangang Software Park or Exhibition Center — LaLaport is between both stations.<br><br><strong style="color:rgba(240,236,227,0.7);font-weight:500;" data-key="d6-s2">臺北流行音樂中心 Taipei Music Center</strong> — 非常有名的音樂展演場地。喜歡看演唱會、黑膠唱片、展覽或文藝活動的人，一定要來。A renowned music venue — perfect if you're into live performances, vinyl records, or cultural exhibitions.</div>
+      </div>
+      <div class="district-tags">
+        <div class="tag-pill" data-key="tag-shopping4">購物 Shopping</div>
+        <div class="tag-pill" data-key="tag-livemusic">展演 Live Music</div>
+        <div class="tag-pill" data-key="tag-culture2">文藝 Culture</div>
+      </div>
+    </div>
+    <div class="district-row">
+      <div class="district-num">07</div>
+      <div>
+        <div class="district-name" data-key="d7-name">夜生活：圓山 vs 信義區</div>
+        <div class="district-name-en" data-key="den7">Nightlife: Yuanshan vs Xinyi</div>
+        <div class="district-desc" data-key="d7-desc"><strong style="color:rgba(240,236,227,0.7);font-weight:500;">圓山 Yuanshan</strong> — 戶外空間為主，範圍大，DJ 音樂種類廣，適合喜歡在外面喝酒、跟陌生人一起跳舞的場合。<br>Mostly outdoor venues, large area, wide range of DJ music — great if you like drinking outside and dancing with strangers.<br><br><strong style="color:rgba(240,236,227,0.7);font-weight:500;">信義區 Xinyi</strong> — 位在101旁邊，以室內酒吧為主，範圍比圓山小，音樂以K-pop和台灣嘻哈為主。<br>Near Taipei 101, mostly indoor bars, smaller area — music leans K-pop and Taiwanese hip-hop.</div>
+      </div>
+      <div class="district-tags">
+        <div class="tag-pill" data-key="tag-nightlife">夜生活 Nightlife</div>
+        <div class="tag-pill" data-key="tag-bar">酒吧 Bar</div>
+      </div>
+    </div>
+    <div class="district-row">
+      <div class="district-num">08</div>
+      <div>
+        <div class="district-name" data-key="d8-name">其他精選</div>
+        <div class="district-name-en" data-key="den8">More Spots</div>
+        <div class="district-desc" data-key="d8-desc">摩天輪 → 大直美麗華（建南路站）· 動物 → 木柵動物園 · 文創展覽 → 松菸（國父紀念館）/ 三創（忠孝新生）· 朝聖早餐 → 阜杭豆漿（善導寺）· 野餐 → 大安森林公園 / 大湖公園<br>Ferris wheel → Miramar · Zoo → Muzha · Culture → Songshan / Syntrend · Breakfast pilgrimage → Fuhang Soy Milk · Picnic → Da'an Park / Dahu Park</div>
+      </div>
+      <div class="district-tags">
+        <div class="tag-pill" data-key="tag-mixed">綜合 Mixed</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">
+    <div class="section-line"></div>
+    <div class="section-text" data-key="planner-sec">還是不知道去哪？AI 幫你安排</div>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="planner-box">
+    <div class="planner-header">
+      <h3 data-key="planner-title">行程規劃器</h3>
+      <p data-key="planner-desc">輸入你感興趣的地點或類型，AI 會根據台北實際情況幫你安排行程。</p>
+    </div>
+    <div class="planner-body">
+      <div class="planner-row">
+        <input class="planner-input" id="planner-spots" data-key-placeholder="planner-placeholder" placeholder="想去的地點或類型，例如：夜市、逛街、看海..." />
+        <select class="planner-select" id="planner-days"></select>
+      </div>
+      <button class="planner-btn" id="planner-btn" onclick="generateItinerary()">
+        <span data-key="planner-btn">✨ 幫我安排行程</span>
+      </button>
+      <div class="planner-loading" id="planner-loading">
+        <span data-key="planner-loading">AI 正在規劃你的台北行程...</span>
+      </div>
+      <div class="planner-result" id="planner-result"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CULTURE -->
+<div class="page" id="page-culture">
+  <div class="hero">
+    <div class="hero-bg-text">文化</div>
+    <div>
+      <div class="hero-tag">Chapter 03</div>
+      <h1><span data-key="c1-h1">The Cheat Sheet</span><em data-key="c1-h1-sub">這些事沒人告訴你，但你需要知道</em></h1>
+      <div class="hero-sub" data-key="c1-sub">Things nobody tells you, but you really need to know</div>
+    </div>
+  </div>
+
+  <div class="section-label">
+    <div class="section-line"></div>
+    <div class="section-text" data-key="c1-sec1">注意事項 Must-Know Rules</div>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="alert-bar">
+    <strong data-key="alert1-title">⚠ 捷運禁食 MRT No Food</strong> — <span data-key="alert1-desc">禁止飲食、喝水（含口香糖），違者罰NT$1,500–7,500。No eating, drinking or gum on the MRT — fines up to NT$7,500.</span>
+  </div>
+  <div class="alert-bar">
+    <strong data-key="alert2-title">🚽 公廁無衛生紙 No Toilet Paper</strong> — <span data-key="alert2-desc">公廁不一定有衛生紙，出門記得自備。Public restrooms may not have toilet paper — always carry some.</span>
+  </div>
+  <div class="alert-bar">
+    <strong data-key="alert3-title">💰 不用給小費 No Tipping</strong> — <span data-key="alert3-desc">台灣沒有給小費文化，給了反而尷尬。No tipping expected anywhere — it can feel awkward if you try.</span>
+  </div>
+
+  <div class="section-label">
+    <div class="section-line"></div>
+    <div class="section-text" data-key="c1-sec2">生活文化 Local Life</div>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="culture-grid">
+    <div class="culture-card">
+      <span class="culture-icon">🏪</span>
+      <div class="culture-title" data-key="cu1-title">便利商店</div>
+      <div class="culture-title-en" data-key="cen1">Convenience Stores</div>
+      <div class="culture-desc" data-key="cu1-desc">24小時、可繳費、可加熱食物、有座位、有ATM、可寄包裹、可影印。密度全球前二，平均1,703人就有一間。<br>24/7, pay bills, hot food, seating, ATM, parcel pickup, photocopying. Taiwan ranks top 2 globally in store density.</div>
+    </div>
+    <div class="culture-card">
+      <span class="culture-icon">🧋</span>
+      <div class="culture-title" data-key="cu2-title">手搖飲文化</div>
+      <div class="culture-title-en" data-key="cen2">Bubble Tea Culture</div>
+      <div class="culture-desc" data-key="cu2-desc">每條街都有，可客製甜度和冰量。這是日常，不是觀光景點。<br>On every block. Customise sweetness & ice level. Daily life — not a tourist attraction.</div>
+    </div>
+    <div class="culture-card">
+      <span class="culture-icon">🌙</span>
+      <div class="culture-title" data-key="cu3-title">夜市文化</div>
+      <div class="culture-title-en" data-key="cen3">Night Market</div>
+      <div class="culture-desc" data-key="cu3-desc">不只是吃飯，是台灣的一種生活方式。晚上7點後去，最熱鬧。<br>More than food — it's a lifestyle. Go after 7pm for the full experience.</div>
+    </div>
+    <div class="culture-card">
+      <span class="culture-icon">🚛</span>
+      <div class="culture-title" data-key="cu4-title">垃圾車音樂</div>
+      <div class="culture-title-en" data-key="cen4">Musical Garbage Trucks</div>
+      <div class="culture-desc" data-key="cu4-desc">每天播放〈少女的祈禱〉，聽到音樂就要追著跑去丟垃圾。這傳統從1968年開始。<br>Plays "Maiden's Prayer" daily since 1968. When you hear it — that's your cue to run out and toss your trash.</div>
+    </div>
+    <div class="culture-card">
+      <span class="culture-icon">🥣</span>
+      <div class="culture-title" data-key="cu5-title">早餐店</div>
+      <div class="culture-title-en" data-key="cen5">Breakfast Shops</div>
+      <div class="culture-desc" data-key="cu5-desc">台灣人很少自己煮。早上5點到下午2點，供應蛋餅、飯糰、豆漿等各式中式及西式餐點，便宜又飽。<br>Taiwanese rarely cook at home. Open 5am–2pm, serving egg crepes, rice balls, soy milk, and a wide mix of local and Western-style dishes — cheap and filling.</div>
+    </div>
+    <div class="culture-card">
+      <span class="culture-icon">🥡</span>
+      <div class="culture-title" data-key="cu6-title">打包文化</div>
+      <div class="culture-title-en" data-key="cen6">Taking Food To-Go</div>
+      <div class="culture-desc" data-key="cu6-desc">吃不完直接跟店家說「我要打包」，完全正常，不需要不好意思。外帶也很普遍，很多店家都有提供打包袋。<br>Asking to pack up your leftovers is completely normal — just say "我要打包" (wǒ yào dǎ bāo). Takeaway is widely available everywhere.</div>
+    </div>
+    <div class="culture-card rule-card">
+      <span class="culture-icon">📱</span>
+      <div class="culture-title" data-key="cu7-title">捷運可以講電話</div>
+      <div class="culture-title-en" data-key="cen7">MRT Phone Etiquette</div>
+      <div class="culture-desc" data-key="cu7-desc">禁止飲食（包含喝水），但可以講電話——跟日本完全相反，初次來台容易搞混。<br>No eating or drinking (including water), but phone calls are fine — the opposite of Japan. Easy to mix up on your first visit.</div>
+    </div>
+    <div class="culture-card">
+      <span class="culture-icon">🏍️</span>
+      <div class="culture-title" data-key="cu8-title">機車文化</div>
+      <div class="culture-title-en" data-key="cen8">Scooter Culture</div>
+      <div class="culture-desc" data-key="cu8-desc">街上機車很多，過馬路務必注意左右，尤其是右轉機車。<br>Lots of scooters — look carefully both ways, especially for right-turning scooters.</div>
+    </div>
+    <div class="culture-card">
+      <span class="culture-icon">🍜</span>
+      <div class="culture-title" data-key="cu9-title">吃冰配熱湯</div>
+      <div class="culture-title-en" data-key="cen9">Ice + Hot Soup Together</div>
+      <div class="culture-desc" data-key="cu9-desc">同一餐同時點刨冰和熱湯，完全正常，不要驚訝。<br>Ordering shaved ice and hot soup in one meal? Totally normal. Don't be surprised.</div>
+    </div>
+    <div class="culture-card">
+      <span class="culture-icon">🌛</span>
+      <div class="culture-title" data-key="cu10-title">宵夜文化</div>
+      <div class="culture-title-en" data-key="cen10">Late Night Food</div>
+      <div class="culture-desc" data-key="cu10-desc">台灣人非常喜歡吃宵夜，這點跟很多國家不太一樣。最經典的選擇是永和豆漿——類似24小時的早餐店，半夜也能吃到豆漿、蛋餅、燒餅。<br>Taiwanese love late-night eating. The go-to is Yonghe Soy Milk — a 24hr breakfast-style shop serving soy milk, egg crepes & sesame flatbreads at any hour.</div>
+    </div>
+    <div class="culture-card">
+      <span class="culture-icon">🧾</span>
+      <div class="culture-title" data-key="cu11-title">發票 × 載具</div>
+      <div class="culture-title-en">Receipts & E-Invoice</div>
+      <div class="culture-desc" data-key="cu11-desc">台灣每筆消費都會開立統一發票，還可以綁定「載具」自動儲存。每兩個月還有機會中獎。持手機或悠遊卡就能當載具用。<br>Every purchase issues a government receipt. Link a "carrier" (your phone or EasyCard) to store them digitally — and enter a bimonthly lottery with cash prizes.</div>
+    </div>
+    <div class="culture-card">
+      <span class="culture-icon">🏥</span>
+      <div class="culture-title" data-key="cu12-title">全民健保</div>
+      <div class="culture-title-en" data-key="cen12">National Health Insurance</div>
+      <div class="culture-desc" data-key="cu12-desc">台灣有全民健保制度，看診費用對本國人來說非常便宜。外國旅客雖然不在健保範圍內，但台灣整體醫療水準高、費用相對合理。<br>Taiwan has universal healthcare — extremely affordable for locals. Visitors aren't covered, but medical standards are high and costs are reasonable.</div>
+    </div>
+    <div class="culture-card">
+      <span class="culture-icon">💴</span>
+      <div class="culture-title" data-key="cu13-title">付錢給整數</div>
+      <div class="culture-title-en" data-key="cen13">Round Up When Paying</div>
+      <div class="culture-desc" data-key="cu13-desc">在台灣消費時，習慣給整數讓找零方便。例如消費83元，通常給103元而不是精確湊零錢。這是普遍的消費禮儀。<br>When paying, it's common to hand over a round number — e.g. NT$103 for an NT$83 item. Counting out exact change is unusual.</div>
+    </div>
+    <div class="culture-card">
+      <span class="culture-icon">📺</span>
+      <div class="culture-title" data-key="cu14-title">電視全都有字幕</div>
+      <div class="culture-title-en" data-key="cen14">TV Always Has Subtitles</div>
+      <div class="culture-desc" data-key="cu14-desc">包括台語節目，幾乎所有電視節目都有中文字幕，有助學中文。<br>Almost all TV shows have Chinese subtitles, including Taiwanese-language programs.</div>
+    </div>
+    <div class="culture-card">
+      <span class="culture-icon">🚪</span>
+      <div class="culture-title" data-key="cu15-title">進房間前先敲門</div>
+      <div class="culture-title-en" data-key="cen15">Knock Before Entering</div>
+      <div class="culture-desc" data-key="cu15-desc">台灣有個不成文的習慣：進飯店房間前會先敲門，即使是自己的房間。這源自於對「房間裡可能有其他存在」的民間信仰，是一種表示尊重的禮節。<br>It's common to knock before entering a hotel room — even your own. Rooted in folk belief that spaces may have unseen presences, it's considered a respectful gesture.</div>
+    </div>
+    <div class="culture-card">
+      <span class="culture-icon">🚶</span>
+      <div class="culture-title" data-key="cu16-title">小綠人紅綠燈</div>
+      <div class="culture-title-en" data-key="cen16">The Walking Man Traffic Light</div>
+      <div class="culture-desc" data-key="cu16-desc">台灣發明了會動的行人號誌「小綠人」。綠燈時小人會走動（越走越快代表快要紅燈了），紅燈時停止。這項設計後來被許多國家引進。<br>Taiwan invented the animated pedestrian signal. The green figure walks (speeding up as time runs out) and stops on red. This design has since been adopted worldwide.</div>
+    </div>
+    <div class="culture-card">
+      <span class="culture-icon">🍬</span>
+      <div class="culture-title" data-key="cu17-title">乖乖文化</div>
+      <div class="culture-title-en" data-key="cen17">The Kuai Kuai Ritual</div>
+      <div class="culture-desc" data-key="cu17-desc">在台灣，你可能會在機器、伺服器、ATM上看到一包綠色「奶油椰子」口味的乖乖零食。台灣人相信放了它，機器就會「乖乖」正常運作。沒有人能解釋，但大家都這樣做。<br>You may spot a green "Kuai Kuai" coconut snack placed on top of machines, servers, or ATMs. Taiwanese believe it keeps equipment running smoothly. No one knows why. Everyone does it anyway.</div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+const T = {
+  zh: {
+    'nav-transport':'交通','nav-places':'地點','nav-culture':'文化',
+    't1-h1':'Getting Around','t1-h1-sub':'搭車攻略',
+    't1-sub':'悠遊卡 vs 一日票 — 第一天別買錯了',
+    't1-pill1':'悠遊卡 EasyCard','t1-pill2':'一日票 Day Pass','t1-pill3':'怎麼選',
+    't1-sec1':'票卡比較',
+    't1-c1-tag':'儲值型','t1-c1-title':'悠遊卡 EasyCard',
+    't1-c1-desc':'可搭捷運、公車、YouBike，還能在便利商店消費。幾乎什麼都能用。',
+    't1-c2-tag':'時間型','t1-c2-title':'一日票 Day Pass',
+    't1-c2-desc':'啟用當日捷運無限搭。注意：只限捷運，公車不算。',
+    't1-th1':'你的狀況','t1-th2':'推薦','t1-th3':'原因',
+    't1-r1c1':'待3天以上','t1-r1c3':'可搭公車＋超商消費，什麼都能刷',
+    't1-r2c1':'只待1天，要狂跑景點','t1-r2c3':'搭超過4趟就回本',
+    't1-r3c1':'不確定','t1-r3c3':'絕對不虧，離台可退押金',
+    't1-tip-label':'小提醒',
+    't1-tip-desc':'機場、各捷運站服務處都買得到悠遊卡。押金100元，離台前到捷運站可退卡取回押金和餘額。',
+    'p1-h1':'Where to Go','p1-h1-sub':'台北各區指南',
+    'p1-sub':'住哪、去哪、吃什麼',
+    'p1-sec1':'住宿建議','p1-sec2':'分區快速指南',
+    'p1-s1-tag':'交通最方便','p1-s1-title':'北門 / 台北車站',
+    'p1-s1-desc':'捷運、高鐵、公車、機場捷運全都在這。什麼都近，交通最方便。',
+    'p1-s2-tag':'鬧中取靜','p1-s2-title':'忠孝新生',
+    'p1-s2-desc':'生活機能好，稍微遠離觀光人潮，適合想感受日常台北的旅客。',
+    'd1-name':'中山 × 雙連','d1-desc':'步行10分鐘可到，中間就是寧夏夜市。中山站有新光三越、SOGO，白天逛街晚上吃夜市一條龍。吃完夜市還沒飽？附近有「世界美食總匯」，宵夜繼續吃。',
+    'd2-name':'東門','d2-desc':'質感小店 + 鼎泰豐本店就在這。適合慢慢逛的午後。',
+    'd3-name':'西門','d3-desc':'年輕、熱鬧、小吃多，像台版原宿。晚上人最多，活力十足。',
+    'd4-name':'信義區 × 象山','d4-desc':'台北101到市政府全是百貨，下雨天首選。逛完走去象山約30分鐘，台北夜景全收。',
+    'd5-name':'淡水 → 沙崙','d5-desc':'想看海就來這。捷運到淡水，轉淡海輕軌到沙崙站，走5–8分鐘就到海邊。',
+    'd6-name':'南港','d6-desc':'<strong style="color:rgba(240,236,227,0.7);font-weight:500;">LaLaport</strong> — 南港軟體園區站或南港展覽館站下車，走在兩站中間就到了。<br><br><strong style="color:rgba(240,236,227,0.7);font-weight:500;">臺北流行音樂中心</strong> — 非常有名的音樂展演場地。喜歡看演唱會、黑膠唱片、展覽或文藝活動的人，一定要來。',
+    'd7-name':'夜生活：圓山 vs 信義區','d7-desc':'<strong style="color:rgba(240,236,227,0.7);font-weight:500;">圓山</strong> — 戶外空間為主，範圍大，DJ音樂種類廣，適合喜歡在外面喝酒、跟陌生人一起跳舞的場合。<br><br><strong style="color:rgba(240,236,227,0.7);font-weight:500;">信義區</strong> — 位在101旁邊，以室內酒吧為主，範圍比圓山小，音樂以K-pop和台灣嘻哈為主。',
+    'd8-name':'其他精選','d8-desc':'摩天輪 → 大直美麗華（建南路站）· 動物 → 木柵動物園 · 文創展覽 → 松菸（國父紀念館）/ 三創（忠孝新生）· 朝聖早餐 → 阜杭豆漿（善導寺）· 野餐 → 大安森林公園 / 大湖公園',
+    'tag-shopping':'逛街','tag-nightmarket':'夜市','tag-latenight':'宵夜',
+    'tag-dining':'餐廳','tag-shopping2':'逛街','tag-streetfood':'小吃','tag-shopping3':'購物',
+    'tag-malls':'百貨','tag-nightview':'夜景','tag-hiking':'健行',
+    'tag-beach':'海邊','tag-lrt':'輕軌',
+    'tag-shopping4':'購物','tag-livemusic':'展演','tag-culture2':'文藝',
+    'tag-nightlife':'夜生活','tag-bar':'酒吧','tag-mixed':'綜合',
+    'planner-sec':'還是不知道去哪？AI 幫你安排',
+    'planner-title':'行程規劃器',
+    'planner-desc':'輸入你感興趣的地點或類型，AI 會根據台北實際情況幫你安排行程。',
+    'planner-placeholder':'想去的地點或類型，例如：夜市、逛街、看海...',
+    'planner-btn':'✨ 幫我安排行程',
+    'planner-loading':'AI 正在規劃你的台北行程...',
+    'days':['1天','2天','3天','4天','5天','6天','7天'],
+    'c1-h1':'The Cheat Sheet','c1-h1-sub':'這些事沒人告訴你，但你需要知道',
+    'c1-sub':'這些事沒人告訴你，但你需要知道',
+    'c1-sec1':'注意事項','c1-sec2':'生活文化',
+    'alert1-title':'⚠ 捷運禁食','alert1-desc':'禁止飲食、喝水（含口香糖），違者罰NT$1,500–7,500。',
+    'alert2-title':'🚽 公廁無衛生紙','alert2-desc':'公廁不一定有衛生紙，出門記得自備。',
+    'alert3-title':'💰 不用給小費','alert3-desc':'台灣沒有給小費文化，給了反而尷尬。',
+    'cu1-title':'便利商店','cu1-desc':'24小時、可繳費、可加熱食物、有座位、有ATM、可寄包裹、可影印。密度全球前二，平均1,703人就有一間。',
+    'cu2-title':'手搖飲文化','cu2-desc':'每條街都有，可客製甜度和冰量。這是日常，不是觀光景點。',
+    'cu3-title':'夜市文化','cu3-desc':'不只是吃飯，是台灣的一種生活方式。晚上7點後去，最熱鬧。',
+    'cu4-title':'垃圾車音樂','cu4-desc':'每天播放〈少女的祈禱〉，聽到音樂就要追著跑去丟垃圾。這傳統從1968年開始。',
+    'cu5-title':'早餐店','cu5-desc':'台灣人很少自己煮。早上5點到下午2點，供應蛋餅、飯糰、豆漿等各式中式及西式餐點，便宜又飽。',
+    'cu6-title':'打包文化','cu6-desc':'吃不完直接跟店家說「我要打包」，完全正常，不需要不好意思。外帶也很普遍，很多店家都有提供打包袋。',
+    'cu7-title':'捷運可以講電話','cu7-desc':'禁止飲食（包含喝水），但可以講電話——跟日本完全相反，初次來台容易搞混。',
+    'cu8-title':'機車文化','cu8-desc':'街上機車很多，過馬路務必注意左右，尤其是右轉機車。',
+    'cu9-title':'吃冰配熱湯','cu9-desc':'同一餐同時點刨冰和熱湯，完全正常，不要驚訝。',
+    'cu10-title':'宵夜文化','cu10-desc':'台灣人非常喜歡吃宵夜，這點跟很多國家不太一樣。最經典的選擇是永和豆漿——類似24小時的早餐店，半夜也能吃到豆漿、蛋餅、燒餅。',
+    'cu11-title':'發票 × 載具','cu11-desc':'台灣每筆消費都會開立統一發票，還可以綁定「載具」自動儲存。每兩個月還有機會中獎。持手機或悠遊卡就能當載具用。',
+    'cu12-title':'全民健保','cu12-desc':'台灣有全民健保制度，看診費用對本國人來說非常便宜。外國旅客雖然不在健保範圍內，但台灣整體醫療水準高、費用相對合理。',
+    'cu13-title':'付錢給整數','cu13-desc':'在台灣消費時，習慣給整數讓找零方便。例如消費83元，通常給103元而不是精確湊零錢。這是普遍的消費禮儀。',
+    'cu14-title':'電視全都有字幕','cu14-desc':'包括台語節目，幾乎所有電視節目都有中文字幕，有助學中文。',
+    'cu15-title':'進房間前先敲門','cu15-desc':'台灣有個不成文的習慣：進飯店房間前會先敲門，即使是自己的房間。這源自於對「房間裡可能有其他存在」的民間信仰，是一種表示尊重的禮節。',
+    'cu16-title':'小綠人紅綠燈','cu16-desc':'台灣發明了會動的行人號誌「小綠人」。綠燈時小人會走動（越走越快代表快要紅燈了），紅燈時停止。這項設計後來被許多國家引進。',
+    'cu17-title':'乖乖文化','cu17-desc':'在台灣，你可能會在機器、伺服器、ATM上看到一包綠色「奶油椰子」口味的乖乖零食。台灣人相信放了它，機器就會「乖乖」正常運作。沒有人能解釋，但大家都這樣做。',
+
+    't1-price1':'NT$500（含100元押金）',
+    't1-price2':'NT$150 / 1日 · NT$180 / 24hr',
+    't1-rec1':'悠遊卡 EasyCard',
+    't1-rec2':'一日票 Day Pass',
+    't1-rec3':'悠遊卡 EasyCard',
+    'den1':'Zhongshan × Shuanglian',
+    'den2':'Dongmen',
+    'den3':'Ximending',
+    'den4':'Xinyi × Elephant Mountain',
+    'den5':'Tamsui → Shaglung Beach',
+    'den6':'Nangang',
+    'den7':'Nightlife: Yuanshan vs Xinyi',
+    'den8':'More Spots',
+    'cen1':'便利超商 Convenience Stores',
+    'cen2':'手搖飲 Bubble Tea',
+    'cen3':'夜市 Night Market',
+    'cen4':'Musical Garbage Trucks',
+    'cen5':'早餐店 Breakfast Shops',
+    'cen6':'打包 Taking Food To-Go',
+    'cen7':'MRT Phone Etiquette',
+    'cen8':'機車 Scooter Culture',
+    'cen9':'Ice + Hot Soup Together',
+    'cen10':'宵夜 Late Night Food',
+    'cen11':'發票 Receipts & E-Invoice',
+    'cen12':'健保 National Health Insurance',
+    'cen13':'付錢 Round Up When Paying',
+    'cen14':'TV Always Has Subtitles',
+    'cen15':'Knock Before Entering',
+    'cen16':'小綠人 Walking Man Signal',
+    'cen17':'乖乖 Kuai Kuai Ritual',
+    'prompt': (spots, days) => `你是一位熟悉台北的在地嚮導。請根據以下條件，幫旅客規劃一份實際可行的台北${days}日行程。\n\n旅客興趣／想去的地點：${spots}\n\n請按照每天的時間順序安排（早上、下午、晚上），包含捷運交通建議，並加上簡短說明。用繁體中文回答，語氣像朋友在分享。`
+  },
+  ja: {
+    'nav-transport':'交通','nav-places':'観光','nav-culture':'文化',
+    't1-h1':'交通ガイド','t1-h1-sub':'乗り方攻略',
+    't1-sub':'EasyCard と1日パス — 初日に間違えないで',
+    't1-pill1':'悠遊卡 EasyCard','t1-pill2':'1日パス Day Pass','t1-pill3':'どっちを選ぶ？',
+    't1-sec1':'カード比較',
+    't1-c1-tag':'チャージ式','t1-c1-title':'悠遊卡 EasyCard',
+    't1-c1-desc':'MRT・バス・YouBike・コンビニで使えます。ほぼどこでも使える万能カード。',
+    't1-c2-tag':'時間制','t1-c2-title':'1日パス Day Pass',
+    't1-c2-desc':'使用当日のMRT乗り放題。注意：MRTのみ、バスは対象外です。',
+    't1-th1':'あなたの状況','t1-th2':'おすすめ','t1-th3':'理由',
+    't1-r1c1':'3日以上滞在する','t1-r1c3':'バスやコンビニでも使えて便利',
+    't1-r2c1':'1日だけ、たくさん移動したい','t1-r2c3':'4回以上乗ればお得',
+    't1-r3c1':'迷ってる','t1-r3c3':'絶対損しない。出国前にデポジット返金可能',
+    't1-tip-label':'ポイント',
+    't1-tip-desc':'空港・各MRT駅のサービスカウンターで購入できます。デポジット100元、出国前に駅で返金可能。',
+    'p1-h1':'観光ガイド','p1-h1-sub':'台北エリア別ガイド',
+    'p1-sub':'どこに泊まる？どこに行く？何を食べる？',
+    'p1-sec1':'宿泊エリア','p1-sec2':'エリア別クイックガイド',
+    'p1-s1-tag':'交通最便利','p1-s1-title':'北門 / 台北駅',
+    'p1-s1-desc':'MRT・新幹線・バス・空港MRTが集まる交通の要所。どこへでもアクセスしやすい。',
+    'p1-s2-tag':'静かな立地','p1-s2-title':'忠孝新生',
+    'p1-s2-desc':'生活感があり、観光客が少ない。台北の日常を体感したい人におすすめ。',
+    'd1-name':'中山 × 雙連','d1-desc':'徒歩10分で移動できる2駅の間に寧夏夜市があります。中山駅には新光三越・SOGOがあり、昼は買い物、夜は夜市で一日楽しめます。夜市の後もまだ食べたいなら近くの「世界美食総匯」へ。',
+    'd2-name':'東門','d2-desc':'センスの良いショップと鼎泰豐本店があります。のんびり午後を過ごすのに最適。',
+    'd3-name':'西門','d3-desc':'若者の街で活気があり、屋台グルメが豊富。台湾版原宿のような雰囲気。夜が一番にぎやか。',
+    'd4-name':'信義区 × 象山','d4-desc':'台北101から市政府まで百貨店が並ぶショッピングエリア。その後、象山ハイキング（約30分）で台北の夜景を一望できます。',
+    'd5-name':'淡水 → 沙崙','d5-desc':'海が見たければここへ。MRTで淡水へ、淡海輕軌に乗り換えて沙崙駅、徒歩5〜8分で海岸へ。',
+    'd6-name':'南港','d6-desc':'<strong style="color:rgba(240,236,227,0.7);font-weight:500;">LaLaport</strong> — 南港軟體園區駅または南港展覧館駅で下車し、2駅の間を歩くと到着します。<br><br><strong style="color:rgba(240,236,227,0.7);font-weight:500;">台北ポップミュージックセンター</strong> — 有名なライブ会場。コンサート・レコード・展覧会が好きな人は必見。',
+    'd7-name':'ナイトライフ：圓山 vs 信義区','d7-desc':'<strong style="color:rgba(240,236,227,0.7);font-weight:500;">圓山</strong> — 屋外スペース中心、エリアが広く、DJの音楽ジャンルも多様。知らない人と一緒に踊りたい方に。<br><br><strong style="color:rgba(240,236,227,0.7);font-weight:500;">信義区</strong> — 101の隣、屋内バー中心、圓山よりコンパクト。K-popや台湾ヒップホップが中心。',
+    'd8-name':'その他おすすめ','d8-desc':'観覧車 → 大直美麗華 · 動物園 → 木柵動物園 · 文化施設 → 松山文創園区（国父紀念館）/ Syntrend（忠孝新生）· 朝ごはんの名店 → 阜杭豆漿（善導寺）· ピクニック → 大安森林公園 / 大湖公園',
+    'tag-shopping':'ショッピング','tag-nightmarket':'夜市','tag-latenight':'夜食',
+    'tag-dining':'グルメ','tag-shopping2':'ショッピング','tag-streetfood':'屋台','tag-shopping3':'ショッピング',
+    'tag-malls':'百貨店','tag-nightview':'夜景','tag-hiking':'ハイキング',
+    'tag-beach':'海岸','tag-lrt':'LRT',
+    'tag-shopping4':'ショッピング','tag-livemusic':'ライブ','tag-culture2':'文化',
+    'tag-nightlife':'ナイトライフ','tag-bar':'バー','tag-mixed':'複合',
+    'planner-sec':'どこへ行くか迷ってる？AIにお任せ',
+    'planner-title':'旅程プランナー',
+    'planner-desc':'行きたい場所や興味を入力すると、AIが台北の旅程を組んでくれます。',
+    'planner-placeholder':'例：夜市、ショッピング、海、アート...',
+    'planner-btn':'✨ 旅程を作る',
+    'planner-loading':'AIが台北の旅程を作成中...',
+    'days':['1日間','2日間','3日間','4日間','5日間','6日間','7日間'],
+    'c1-h1':'知っておくべきこと','c1-h1-sub':'誰も教えてくれなかった台湾の常識',
+    'c1-sub':'誰も教えてくれなかった、でも知っておきたいこと',
+    'c1-sec1':'注意事項','c1-sec2':'台湾の生活文化',
+    'alert1-title':'⚠ MRT内は飲食禁止','alert1-desc':'飲食・飲み物・ガムも禁止。違反するとNT$1,500〜7,500の罰金。',
+    'alert2-title':'🚽 トイレにトイレットペーパーがない場合あり','alert2-desc':'持参することをおすすめします。',
+    'alert3-title':'💰 チップは不要','alert3-desc':'台湾にはチップ文化がありません。渡すと逆に気まずくなることも。',
+    'cu1-title':'コンビニ','cu1-desc':'24時間営業、公共料金支払い、温かい食事、座席、ATM、宅配、コピーまで対応。密度は世界2位で、平均1,703人に1店舗。',
+    'cu2-title':'タピオカ文化','cu2-desc':'どの通りにもある。甘さと氷の量をカスタマイズ可能。観光スポットではなく日常。',
+    'cu3-title':'夜市文化','cu3-desc':'ただの食事の場ではなく、台湾のライフスタイルそのもの。夜7時以降が一番にぎやか。',
+    'cu4-title':'ゴミ収集車の音楽','cu4-desc':'毎日「乙女の祈り」を流しながら来ます。音楽が聞こえたらゴミを持って外へ。1968年から続く伝統。',
+    'cu5-title':'朝食店','cu5-desc':'台湾人はほとんど自炊しません。朝5時〜午後2時、卵クレープ・おにぎり・豆乳など中西式の料理が安く食べられます。',
+    'cu6-title':'持ち帰り文化','cu6-desc':'食べ残しは「打包して」と言えばOK。恥ずかしくありません。テイクアウトも一般的。',
+    'cu7-title':'MRTで電話OK','cu7-desc':'飲食（水も含む）は禁止ですが、電話は可能。日本とは真逆なので初来台の方は注意。',
+    'cu8-title':'バイク文化','cu8-desc':'道路にバイクが多い。横断歩道では特に右折バイクに注意。',
+    'cu9-title':'かき氷と熱いスープを一緒に','cu9-desc':'同じ食事でかき氷と熱いスープを注文するのは普通のこと。驚かないで。',
+    'cu10-title':'夜食文化','cu10-desc':'台湾人は夜食が大好き。代表格は永和豆漿で、24時間営業の朝食スタイルの店。深夜でも豆乳・卵クレープ・焼き餅が食べられます。',
+    'cu11-title':'レシートと電子キャリア','cu11-desc':'台湾では全ての購入に政府発行のレシートが発行されます。スマホや悠遊卡を「キャリア」として登録すれば自動保存でき、2ヶ月ごとに抽選で賞金も当たります。',
+    'cu12-title':'全民健康保険','cu12-desc':'台湾には全国民健康保険制度があり、地元の人は非常に安く医療を受けられます。外国人観光客は対象外ですが、医療水準は高く費用も比較的合理的です。',
+    'cu13-title':'支払いは切り上げで','cu13-desc':'台湾では端数を出さず切り上げて支払うのが一般的。例えば83元なら103元を渡します。小銭をぴったり出す習慣はあまりありません。',
+    'cu14-title':'テレビには常に字幕','cu14-desc':'台湾語番組も含め、ほぼ全てのテレビ番組に中国語字幕があります。中国語学習にも役立ちます。',
+    'cu15-title':'ホテルに入る前にノック','cu15-desc':'自分の部屋でも入る前にノックするのが台湾の慣習。「部屋に何か他の存在がいるかもしれない」という民間信仰に由来する敬意の表れです。',
+    'cu16-title':'歩行者信号の小緑人','cu16-desc':'台湾が発明したアニメーション式の歩行者信号。青になると人形が歩き始め（点滅が速くなったら赤になる合図）、赤で止まります。この仕組みは現在多くの国で採用されています。',
+    'cu17-title':'乖乖（クアイクアイ）文化','cu17-desc':'台湾では機械、サーバー、ATMの上に緑色の「バタフライピーナッツ味」の乖乖スナックが置かれていることがあります。台湾人は「置くと機械が乖乖（おとなしく）動く」と信じています。理由は誰も知りません。でも、みんなやっています。',
+
+    't1-price1':'NT$500（デポジット100元含む）',
+    't1-price2':'NT$150 / 1日 · NT$180 / 24時間',
+    't1-rec1':'悠遊卡 EasyCard',
+    't1-rec2':'1日パス Day Pass',
+    't1-rec3':'悠遊卡 EasyCard',
+    'den1':'中山 × 雙連',
+    'den2':'東門',
+    'den3':'西門',
+    'den4':'信義区 × 象山',
+    'den5':'淡水 → 沙崙',
+    'den6':'南港',
+    'den7':'ナイトライフ: 圓山 vs 信義区',
+    'den8':'その他おすすめ',
+    'cen1':'コンビニ Convenience Stores',
+    'cen2':'タピオカ Bubble Tea',
+    'cen3':'夜市 Night Market',
+    'cen4':'ゴミ収集車 Garbage Truck Music',
+    'cen5':'朝食店 Breakfast Shops',
+    'cen6':'テイクアウト Taking Food To-Go',
+    'cen7':'MRT電話マナー Phone Etiquette',
+    'cen8':'バイク Scooter Culture',
+    'cen9':'かき氷＋スープ Ice + Hot Soup',
+    'cen10':'夜食 Late Night Food',
+    'cen11':'レシート Receipts & E-Invoice',
+    'cen12':'健康保険 National Health Insurance',
+    'cen13':'支払い方法 Round Up When Paying',
+    'cen14':'テレビ字幕 TV Subtitles',
+    'cen15':'ノックの習慣 Knock Before Entering',
+    'cen16':'小緑人 Walking Man Signal',
+    'cen17':'乖乖の慣習 Kuai Kuai Ritual',
+    'prompt': (spots, days) => `あなたは台北に詳しいローカルガイドです。以下の条件をもとに、実用的な台北${days}日間の旅程を作ってください。\n\n興味・行きたい場所：${spots}\n\n朝・昼・夜の時間帯に分けて、MRTの交通案内も含めて提案してください。友達に話すような親しみやすい口調で、日本語で回答してください。`
+  },
+  ko: {
+    'nav-transport':'교통','nav-places':'장소','nav-culture':'문화',
+    't1-h1':'교통 가이드','t1-h1-sub':'대중교통 완전 정복',
+    't1-sub':'이지카드 vs 1일권 — 첫날 잘못 사지 마세요',
+    't1-pill1':'悠遊卡 이지카드','t1-pill2':'1일 정기권','t1-pill3':'뭘 선택할까?',
+    't1-sec1':'카드 비교',
+    't1-c1-tag':'충전식','t1-c1-title':'悠遊卡 이지카드',
+    't1-c1-desc':'MRT·버스·유바이크·편의점 모두 사용 가능. 거의 어디서나 쓸 수 있는 만능 카드.',
+    't1-c2-tag':'시간제','t1-c2-title':'1일권 Day Pass',
+    't1-c2-desc':'사용 당일 MRT 무제한 탑승. 단, MRT만 해당되며 버스는 포함되지 않습니다.',
+    't1-th1':'상황','t1-th2':'추천','t1-th3':'이유',
+    't1-r1c1':'3일 이상 체류','t1-r1c3':'버스·편의점에서도 사용 가능해서 편리',
+    't1-r2c1':'하루만, 많이 돌아다닐 예정','t1-r2c3':'4회 이상 타면 본전',
+    't1-r3c1':'모르겠다면','t1-r3c3':'절대 손해 없음. 출국 전 보증금 환불 가능',
+    't1-tip-label':'꿀팁',
+    't1-tip-desc':'공항·각 MRT역 서비스센터에서 구매 가능. 보증금 100NT$, 출국 전 역에서 환불 가능.',
+    'p1-h1':'여행지 가이드','p1-h1-sub':'타이베이 지역별 안내',
+    'p1-sub':'어디 묵을까? 어디 갈까? 뭘 먹을까?',
+    'p1-sec1':'숙소 추천','p1-sec2':'지역별 빠른 가이드',
+    'p1-s1-tag':'교통 최편리','p1-s1-title':'베이먼 / 타이베이역',
+    'p1-s1-desc':'MRT·고속철도·버스·공항MRT가 모두 모이는 교통 허브. 어디든 접근하기 쉬운 최고의 위치.',
+    'p1-s2-tag':'조용한 입지','p1-s2-title':'忠孝新生 (중샤오신성)',
+    'p1-s2-desc':'생활 편의시설이 좋고 관광객이 적어 타이베이 일상을 느끼고 싶은 분께 추천.',
+    'd1-name':'중산 × 솽롄','d1-desc':'두 역 사이를 걸으면 10분, 중간에 닝샤 야시장이 있습니다. 중산역에는 신광산웨·SOGO가 있어 낮엔 쇼핑, 밤엔 야시장으로 하루 완성. 야시장 후에도 배고프다면 근처 「世界美食總匯」에서 야식을 즐기세요.',
+    'd2-name':'동먼','d2-desc':'감각 있는 작은 가게들과 딘타이펑 본점이 있습니다. 느긋한 오후를 보내기에 딱.',
+    'd3-name':'시먼','d3-desc':'젊고 활기차며 길거리 음식이 풍부. 타이완판 하라주쿠 같은 분위기. 밤에 가장 활기차요.',
+    'd4-name':'신이구 × 샹산','d4-desc':'타이베이101에서 시정부역까지 백화점이 즐비한 쇼핑 지구. 쇼핑 후 샹산 하이킹(약 30분)으로 타이베이 야경을 한눈에.',
+    'd5-name':'단수이 → 사룬','d5-desc':'바다가 보고 싶다면 여기로. MRT로 단수이역, 단하이 경전철로 환승해 사룬역 하차, 도보 5~8분이면 해변.',
+    'd6-name':'난강','d6-desc':'<strong style="color:rgba(240,236,227,0.7);font-weight:500;">LaLaport</strong> — 난강 소프트웨어파크역 또는 난강전시관역에서 내려 두 역 사이를 걸으면 도착.<br><br><strong style="color:rgba(240,236,227,0.7);font-weight:500;">타이베이 팝뮤직센터</strong> — 유명한 공연장. 콘서트·레코드·전시·문화 행사를 좋아하는 분은 꼭 방문.',
+    'd7-name':'나이트라이프: 위안산 vs 신이구','d7-desc':'<strong style="color:rgba(240,236,227,0.7);font-weight:500;">위안산</strong> — 야외 공간 중심, 넓은 구역, DJ 음악 장르 다양. 야외에서 마시며 모르는 사람과 춤추는 분위기를 좋아한다면 추천.<br><br><strong style="color:rgba(240,236,227,0.7);font-weight:500;">신이구</strong> — 101 옆, 실내 바 중심, 위안산보다 작은 규모. 음악은 K-pop과 타이완 힙합 위주.',
+    'd8-name':'기타 추천','d8-desc':'대관람차 → 다즈 미라마 · 동물원 → 무자 동물원 · 문화 전시 → 쑹산 문창원구(국부기념관) / Syntrend(중샤오신성) · 아침 명소 → 푸항 두장(선다오쓰) · 피크닉 → 다안산림공원 / 다후공원',
+    'tag-shopping':'쇼핑','tag-nightmarket':'야시장','tag-latenight':'야식',
+    'tag-dining':'맛집','tag-shopping2':'쇼핑','tag-streetfood':'길거리 음식','tag-shopping3':'쇼핑',
+    'tag-malls':'백화점','tag-nightview':'야경','tag-hiking':'하이킹',
+    'tag-beach':'해변','tag-lrt':'경전철',
+    'tag-shopping4':'쇼핑','tag-livemusic':'공연','tag-culture2':'문화',
+    'tag-nightlife':'나이트라이프','tag-bar':'바','tag-mixed':'복합',
+    'planner-sec':'어디 갈지 모르겠다면? AI한테 맡겨봐',
+    'planner-title':'여행 일정 플래너',
+    'planner-desc':'가고 싶은 곳이나 관심사를 입력하면 AI가 타이베이 일정을 짜드려요.',
+    'planner-placeholder':'예: 야시장, 쇼핑, 바다, 전시회...',
+    'planner-btn':'✨ 일정 만들기',
+    'planner-loading':'AI가 타이베이 일정을 만들고 있어요...',
+    'days':['1일','2일','3일','4일','5일','6일','7일'],
+    'c1-h1':'알아두면 좋은 것들','c1-h1-sub':'아무도 말 안 해줬지만 꼭 알아야 하는 것',
+    'c1-sub':'아무도 말 안 해줬지만 꼭 알아야 할 것들',
+    'c1-sec1':'주의사항','c1-sec2':'타이완 생활문화',
+    'alert1-title':'⚠ MRT 내 음식 금지','alert1-desc':'음식·음료·껌 모두 금지. 위반 시 NT$1,500~7,500 벌금.',
+    'alert2-title':'🚽 화장실에 휴지 없을 수 있음','alert2-desc':'외출 시 개인 휴지를 지참하는 것을 추천합니다.',
+    'alert3-title':'💰 팁 문화 없음','alert3-desc':'타이완에는 팁 문화가 없습니다. 드리면 오히려 어색해질 수 있어요.',
+    'cu1-title':'편의점','cu1-desc':'24시간 운영, 공과금 납부, 따뜻한 음식, 좌석, ATM, 택배, 복사까지 가능. 밀도 세계 2위, 평균 1,703명당 1개.',
+    'cu2-title':'버블티 문화','cu2-desc':'모든 골목에 있어요. 단맛과 얼음 양 커스텀 가능. 관광 명소가 아니라 일상입니다.',
+    'cu3-title':'야시장 문화','cu3-desc':'단순히 먹는 곳이 아니라 타이완의 라이프스타일. 저녁 7시 이후가 가장 활기차요.',
+    'cu4-title':'쓰레기차 음악','cu4-desc':'매일 「소녀의 기도」를 틀며 옵니다. 음악이 들리면 쓰레기를 들고 나가세요. 1968년부터 이어진 전통.',
+    'cu5-title':'아침 식당','cu5-desc':'타이완 사람들은 거의 직접 요리하지 않아요. 오전 5시~오후 2시, 단빙·주먹밥·두유 등 중서식 메뉴를 저렴하게.',
+    'cu6-title':'포장 문화','cu6-desc':'남은 음식은 「포장해 주세요」라고 하면 됩니다. 전혀 민망하지 않아요. 테이크아웃도 어디서나 가능.',
+    'cu7-title':'MRT에서 통화 가능','cu7-desc':'음식·음료(물 포함)는 금지지만 전화 통화는 가능. 일본과 정반대라서 처음 방문자는 헷갈릴 수 있어요.',
+    'cu8-title':'오토바이 문화','cu8-desc':'도로에 오토바이가 많습니다. 횡단보도 건널 때 특히 우회전 오토바이를 주의하세요.',
+    'cu9-title':'빙수와 뜨거운 국물을 함께','cu9-desc':'같은 식사에서 빙수와 뜨거운 국물을 함께 주문하는 것은 완전히 정상. 놀라지 마세요.',
+    'cu10-title':'야식 문화','cu10-desc':'타이완 사람들은 야식을 정말 좋아합니다. 다른 나라와 조금 다른 점이에요. 대표 야식은 永和豆漿으로, 24시간 아침식당 스타일의 가게에서 두유·단빙·소병을 새벽에도 먹을 수 있습니다.',
+    'cu11-title':'영수증과 전자 지갑','cu11-desc':'타이완에서는 모든 구매에 정부 발행 영수증이 나옵니다. 스마트폰이나 이지카드를 「캐리어」로 등록하면 자동 저장되고, 2개월마다 추첨으로 상금도 받을 수 있어요.',
+    'cu12-title':'전국민 건강보험','cu12-desc':'타이완에는 전국민 건강보험 제도가 있어 내국인은 매우 저렴하게 의료 서비스를 받을 수 있습니다. 외국인 여행자는 적용 대상이 아니지만 의료 수준이 높고 비용도 합리적입니다.',
+    'cu13-title':'지불은 반올림으로','cu13-desc':'타이완에서는 거스름돈이 편하도록 올림해서 내는 것이 일반적입니다. 예를 들어 83NT$면 103NT$를 냅니다. 정확한 금액을 맞춰 내는 습관은 거의 없어요.',
+    'cu14-title':'TV에는 항상 자막','cu14-desc':'타이완어 방송 포함, 거의 모든 TV 프로그램에 중국어 자막이 있습니다. 중국어 공부에도 도움이 돼요.',
+    'cu15-title':'호텔 방 들어가기 전 노크','cu15-desc':'자기 방이라도 들어가기 전에 노크하는 것이 타이완의 불문율. \"방에 다른 존재가 있을 수 있다\"는 민간 신앙에서 비롯된 존중의 표현입니다.',
+    'cu16-title':'보행자 신호의 초록색 사람','cu16-desc':'타이완이 발명한 애니메이션 방식의 보행자 신호입니다. 초록색 사람이 걷기 시작하고(빨라지면 곧 빨간불), 빨간불에 멈춥니다. 이 디자인은 현재 여러 나라에서 채택되고 있습니다.',
+    'cu17-title':'콰이콰이(乖乖) 문화','cu17-desc':'타이완에서는 기계·서버·ATM 위에 녹색 「버터코코넛맛」 콰이콰이 과자가 올려져 있는 것을 볼 수 있어요. 타이완 사람들은 이걸 올려두면 기계가 「순순히」 잘 작동한다고 믿습니다. 이유는 아무도 모르지만, 다들 그렇게 합니다.',
+
+    't1-price1':'NT$500（보증금 100元 포함）',
+    't1-price2':'NT$150 / 1일 · NT$180 / 24시간',
+    't1-rec1':'悠遊卡 이지카드',
+    't1-rec2':'1일권 Day Pass',
+    't1-rec3':'悠遊卡 이지카드',
+    'den1':'중산 × 솽롄',
+    'den2':'동먼',
+    'den3':'시먼',
+    'den4':'신이구 × 샹산',
+    'den5':'단수이 → 사룬',
+    'den6':'난강',
+    'den7':'나이트라이프: 위안산 vs 신이구',
+    'den8':'기타 추천',
+    'cen1':'편의점 Convenience Stores',
+    'cen2':'버블티 Bubble Tea',
+    'cen3':'야시장 Night Market',
+    'cen4':'쓰레기차 음악 Garbage Truck Music',
+    'cen5':'아침 식당 Breakfast Shops',
+    'cen6':'포장 문화 Taking Food To-Go',
+    'cen7':'MRT 통화 예절 Phone Etiquette',
+    'cen8':'오토바이 Scooter Culture',
+    'cen9':'빙수＋국물 Ice + Hot Soup',
+    'cen10':'야식 Late Night Food',
+    'cen11':'영수증 Receipts & E-Invoice',
+    'cen12':'건강보험 National Health Insurance',
+    'cen13':'지불 방법 Round Up When Paying',
+    'cen14':'TV 자막 TV Subtitles',
+    'cen15':'노크 문화 Knock Before Entering',
+    'cen16':'초록색 사람 신호 Walking Man Signal',
+    'cen17':'콰이콰이 Kuai Kuai Ritual',
+    'prompt': (spots, days) => `당신은 타이베이를 잘 아는 현지 가이드입니다. 아래 조건을 바탕으로 실용적인 타이베이 ${days}일 여행 일정을 만들어주세요.\n\n관심사/가고 싶은 곳：${spots}\n\n오전·오후·저녁으로 나눠서, MRT 교통 안내도 포함해 주세요. 친구에게 말하듯 친근한 말투로 한국어로 답해주세요.`
+  }
+};
+
+let currentLang = 'zh';
+
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function setLang(lang, btn) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  const L = T[lang];
+  document.querySelectorAll('[data-key]').forEach(el => {
+    const k = el.getAttribute('data-key');
+    if (L[k] !== undefined) el.innerHTML = L[k];
+  });
+  document.querySelectorAll('[data-key-placeholder]').forEach(el => {
+    const k = el.getAttribute('data-key-placeholder');
+    if (L[k] !== undefined) el.placeholder = L[k];
+  });
+  const sel = document.querySelector('#planner-days');
+  const cur = sel.value;
+  sel.innerHTML = L['days'].map((d,i) => `<option value="${i+1}">${d}</option>`).join('');
+  sel.value = cur;
+  const result = document.querySelector('#planner-result');
+  result.style.display = 'none';
+  result.textContent = '';
+}
+
+async function generateItinerary() {
+  const spots = document.querySelector('#planner-spots').value.trim();
+  if (!spots) { document.querySelector('#planner-spots').focus(); return; }
+  const days = document.querySelector('#planner-days').value;
+  const btn = document.querySelector('#planner-btn');
+  const loading = document.querySelector('#planner-loading');
+  const result = document.querySelector('#planner-result');
+  const L = T[currentLang];
+  btn.disabled = true;
+  loading.style.display = 'block';
+  result.style.display = 'none';
+  result.textContent = '';
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: L.prompt(spots, days) }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.find(b => b.type === 'text')?.text || '';
+    result.textContent = text;
+    result.style.display = 'block';
+  } catch(e) {
+    result.textContent = currentLang === 'ja' ? 'エラーが発生しました。もう一度お試しください。'
+      : currentLang === 'ko' ? '오류가 발생했어요. 다시 시도해주세요.'
+      : '發生錯誤，請再試一次。';
+    result.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    loading.style.display = 'none';
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  const sel = document.querySelector('#planner-days');
+  sel.innerHTML = T['zh']['days'].map((d,i) => `<option value="${i+1}">${d}</option>`).join('');
+});
+</script>
+</body>
+</html>
